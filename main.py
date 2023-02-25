@@ -1,6 +1,6 @@
 import customtkinter
 import tkinter as tk
-from random import shuffle
+from random import shuffle, randint
 
 class StructQuestion():
     def __init__(self):
@@ -11,7 +11,7 @@ class StructQuestion():
 File = open("Вопросы.txt", encoding = "UTF-8")
 
 Lines = [Line.replace("\n", '') for Line in File.readlines()]
-Questions_Count = len(Lines) // 5
+Questions_Count = randint(10,15)
 Questions = [None] * Questions_Count
 
 for i in range(Questions_Count):
@@ -304,11 +304,13 @@ class Results(customtkinter.CTkToplevel):
 class App(customtkinter.CTk): # Главное окно
     def __init__(self):
         super().__init__()
-        global Questions, mode
+        global Questions, mode, Questions_Count
         
         self.geometry("600x320")
         self.minsize(600,320)
         self.title("Программа для тестирования")
+
+        Questions_Count = randint(10,15)
 
         self.toplevel_window = None
         self.open_toplevel()
