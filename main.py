@@ -56,6 +56,7 @@ class GetName(customtkinter.CTkToplevel):
         global Name, Questions, Questions_Count, mark, score
         self.geometry("400x220")
         self.maxsize(400,220)
+        self.title("Save")
 
         self.my_frame = customtkinter.CTkLabel(master = self, text = "Введите фамилию и имя", font = ("Comic Sans", 16, "normal"))
         self.my_frame.pack(pady=20)
@@ -68,23 +69,27 @@ class GetName(customtkinter.CTkToplevel):
 
     def name_button_callback(self):
         Name = self.input_field.get(1.0,customtkinter.END)
-        GetName.destroy(self)
-        f = open("Результаты.txt","a",encoding = "UTF-8")
-        f.write("-" + Name)
-        f.write("*" + str(mark) + "\n")
-        f.write(">" + str(score) + "\n")
-        r = 0
-        for i in range(Questions_Count):
-            question = Questions[i]
-            if r < len(mistakes):
-                if i == mistakes[r][0]:
-                    f.write(question.Text + "\n" + question.Answers[mistakes[r][1]] + "\n" + question.Answers[question.TrueAnswer] + "\n")
-                    r += 1
+        if Name != "\n":
+            GetName.destroy(self)
+            f = open("Результаты.txt","a",encoding = "UTF-8")
+            f.write("-" + Name)
+            f.write("*" + str(mark) + "\n")
+            f.write(">" + str(score) + "\n")
+            r = 0
+            for i in range(Questions_Count):
+                question = Questions[i]
+                if r < len(mistakes):
+                    if i == mistakes[r][0]:
+                        f.write(question.Text + "\n" + question.Answers[mistakes[r][1]] + "\n" + question.Answers[question.TrueAnswer] + "\n")
+                        r += 1
+                    else:
+                        f.write(question.Text + "\n" + question.Answers[question.TrueAnswer] + "\n" + question.Answers[question.TrueAnswer] + "\n")
                 else:
-                    f.write(question.Text + "\n" + question.Answers[question.TrueAnswer] + "\n" + question.Answers[question.TrueAnswer] + "\n")
-            else:
-                    f.write(question.Text + "\n" + question.Answers[question.TrueAnswer] + "\n" + question.Answers[question.TrueAnswer] + "\n")
-        f.close()
+                        f.write(question.Text + "\n" + question.Answers[question.TrueAnswer] + "\n" + question.Answers[question.TrueAnswer] + "\n")
+            f.close()
+        else:
+            tk.messagebox.showinfo("Ошибка", "Пустое поле")
+        
 
             
     
@@ -94,6 +99,7 @@ class ToplevelWindow(customtkinter.CTkToplevel):
         super().__init__()
         self.geometry("350x220")
         self.maxsize(400,220)
+        self.title("Режим")
 
         self.ch = customtkinter.CTkLabel(master=self, text = "Выберите режим", font = ("Comic Sans", 18, "normal"))
         self.ch.pack(pady = 8)
@@ -123,6 +129,7 @@ class ResultsWindow(customtkinter.CTkToplevel):
         super().__init__()
         self.geometry("1200x700")
         self.minsize(600,350)
+        self.title("Результат")
         if Name != "":
             self.name_label = customtkinter.CTkLabel(master=self, text = "Name", font = ("Comic Sans", 20, "normal"))
             self.name_label.pack()
@@ -184,6 +191,7 @@ class Results_list(customtkinter.CTkToplevel):
         global Names, Res
         self.geometry("600x250")
         self.minsize(600,250)
+        self.title("Оценки")
 
         self.info_window = None
         
@@ -236,6 +244,7 @@ class Results_list(customtkinter.CTkToplevel):
             if Res[i].mark != 0:
                 self.tree.insert("", tk.END, values=(Res[i].name, Res[i].mark, i))
 
+
     def selectItem(self,a):
         global result_id
         curItem = self.tree.focus()
@@ -252,6 +261,7 @@ class Results(customtkinter.CTkToplevel):
         global Res, result_id
         self.geometry("1000x600")
         self.minsize(1000,600)
+        self.title("Результат")
 
         j = result_id
         q = 0
@@ -392,7 +402,6 @@ class App(customtkinter.CTk): # Главное окно
 
             restart_button = customtkinter.CTkButton(master=self, text="Начать заново", width=250, height=80, command=restart_button_callback)
             restart_button.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
-            #restart_button.pack()
 
         def restart_button_callback():
             global mistakes, q_count, mode, score
@@ -502,8 +511,12 @@ class App(customtkinter.CTk): # Главное окно
                 answer_3.destroy()
                 answer_4.destroy()
 
-                restart_button = customtkinter.CTkButton(master=self, text="Начать заново", width=250, height=70, command=restart_button_callback)
-                restart_button.pack(padx=20, pady=20)
+                self.geometry("400x220")
+                self.minsize(400,220)
+
+                restart_button = customtkinter.CTkButton(master=self, text="Начать заново", width=250, height=80, command=restart_button_callback)
+                restart_button.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+                
             else:
                 match self.radio_var.get() + 1:
                     case 1: answer_1.configure(text_color = "red")
